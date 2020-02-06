@@ -9,7 +9,7 @@ public class MyFloatEvent : UnityEvent<float> { }
 
 public class DistanceFromObject : MonoBehaviour
 {
-    public GameObject[] targets;            //Targets to monitor.
+    public List<GameObject> targets = new List<GameObject>();  //Targets to monitor.
 
     public float upperThreshold = 1.5f;     //Upper distance to calculate proxmity.
     public float lowerThreshold = 0.5f;     //Lower distance to calculate proximity
@@ -22,6 +22,15 @@ public class DistanceFromObject : MonoBehaviour
     private bool inRange;
     private bool outOfRange;
 
+
+    /// <summary>
+    /// Add additional target object to list.
+    /// </summary>
+    /// <param name="target">Target object</param>
+    public void SetTarget(GameObject target)
+    {
+        targets.Add(target);
+    }
 
 
     // Update is called once per frame
