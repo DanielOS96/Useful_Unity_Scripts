@@ -5,7 +5,7 @@ using UnityEngine.Events;
 /// <summary>
 /// Move or rotate an object over a given time.
 /// </summary>
-public class MoveLerpObject : MonoBehaviour
+public class MoveObjectOverTime : MonoBehaviour
 {
     public enum MoveType {move, rotate, both }
 
@@ -19,11 +19,24 @@ public class MoveLerpObject : MonoBehaviour
     public bool worldSpace = true;              //Weather to preform the move in world space or local space.
 
     [Header("Events")]
-    public UnityEvent onMovementStarted;        //Called once movement is started.
-    public UnityEvent onMovementComplete;       //Called once movement is completed.
-    public UnityEvent onRotationStarted;        //Called once rotation is started.
-    public UnityEvent onRotationCompleted;      //Called once rotation is completed.
+    public MyGameobjectEvent onMovementStarted;        //Called once movement is started.
+    public MyGameobjectEvent onMovementComplete;       //Called once movement is completed.
+    public MyGameobjectEvent onRotationStarted;        //Called once rotation is started.
+    public MyGameobjectEvent onRotationCompleted;      //Called once rotation is completed.
 
+
+    public GameObject GameObjectToMove
+    {
+        get
+        {
+            return transfromToMove.gameObject;
+        }
+        set
+        {
+            transfromToMove = value.transform;
+            if (startTransform == null) startTransform = value.transform;
+        }
+    }
 
 
     /// <summary>
@@ -50,12 +63,12 @@ public class MoveLerpObject : MonoBehaviour
     }
 
     //Coroutine responsible for moving transform over seconds.
-    private IEnumerator MoveOverSeconds(Transform objectToMove, Vector3 start ,Vector3 end, float seconds, float delay = 0)
+    private IEnumerator MoveOverSeconds(Transform objectToMove, Vector3 start ,Vector3 end, float seconds, float delay)
     {
         float elapsedTime = 0;
 
         yield return new WaitForSeconds(delay);
-        onMovementStarted.Invoke();
+        onMovementStarted.Invoke(objectToMove.gameObject);
 
         while (elapsedTime < seconds)
         {
@@ -70,16 +83,16 @@ public class MoveLerpObject : MonoBehaviour
         if (worldSpace)objectToMove.position = end;
         else objectToMove.localPosition = end;
 
-        onMovementComplete.Invoke();
+        onMovementComplete.Invoke(objectToMove.gameObject);
     }
 
     //Coroutine responsible for rotating transform over seconds.
-    private IEnumerator RotateOverSeconds(Transform objectToRotate, Quaternion start, Quaternion end, float seconds, float delay = 0)
+    private IEnumerator RotateOverSeconds(Transform objectToRotate, Quaternion start, Quaternion end, float seconds, float delay)
     {
         float elapsedTime = 0;
 
         yield return new WaitForSeconds(delay);
-        onRotationStarted.Invoke();
+        onRotationStarted.Invoke(objectToRotate.gameObject);
 
         while (elapsedTime < seconds)
         {
@@ -93,7 +106,7 @@ public class MoveLerpObject : MonoBehaviour
         if (worldSpace) objectToRotate.rotation = end;
         else objectToRotate.localRotation = end;
 
-        onRotationCompleted.Invoke();
+        onRotationCompleted.Invoke(objectToRotate.gameObject);
     }
 
 }
