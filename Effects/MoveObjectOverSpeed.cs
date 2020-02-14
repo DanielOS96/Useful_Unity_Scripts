@@ -36,6 +36,28 @@ public class MoveObjectOverSpeed : MonoBehaviour
             if (startTransform == null) startTransform = value.transform;
         }
     }
+    public GameObject GameObjectStartPosition
+    {
+        get
+        {
+            return startTransform.gameObject;
+        }
+        set
+        {
+            startTransform = value.transform;
+        }
+    }
+    public GameObject GameObjectEndPosition
+    {
+        get
+        {
+            return endTransform.gameObject;
+        }
+        set
+        {
+            endTransform = value.transform;
+        }
+    }
 
 
     public void StartMovement()
