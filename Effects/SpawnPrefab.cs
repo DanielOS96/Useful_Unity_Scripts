@@ -12,11 +12,20 @@ public class SpawnPrefab : MonoBehaviour
     public float timeBeforeDestroy;
     public Vector3 positionOffset;
 
+
+    public GameObject Prefab
+    {
+        get => prefab;
+        set => prefab = value;
+    }
+    
+
+
     GameObject spawnedObj;
 
     public void Spawn()
     {
-        spawnPos = spawnPos = null ?? transform;
+        spawnPos = spawnPos == null ? transform: spawnPos;
 
         spawnedObj = Instantiate(prefab, spawnPos.position+positionOffset, spawnPos.rotation);
 
