@@ -6,6 +6,9 @@ using UnityEngine.Events;
 
 public class MoveObjectOverSpeed : MonoBehaviour
 {
+    [System.Serializable]
+    public class GameObjectUnityEvent : UnityEvent<GameObject>{}
+
     public enum MoveType { move, rotate, both }
 
     public MoveType moveType = MoveType.move;   //The type of movement lerp that will be preformed.
@@ -19,10 +22,10 @@ public class MoveObjectOverSpeed : MonoBehaviour
     public bool worldSpace = true;              //Weather to preform the move in world space or local space.
 
     [Header("Events")]
-    public MyGameobjectEvent onMovementStarted;        //Called once movement is started.
-    public MyGameobjectEvent onMovementComplete;       //Called once movement is completed.
-    public MyGameobjectEvent onRotationStarted;        //Called once rotation is started.
-    public MyGameobjectEvent onRotationCompleted;      //Called once rotation is completed.
+    public GameObjectUnityEvent onMovementStarted;        //Called once movement is started.
+    public GameObjectUnityEvent onMovementComplete;       //Called once movement is completed.
+    public GameObjectUnityEvent onRotationStarted;        //Called once rotation is started.
+    public GameObjectUnityEvent onRotationCompleted;      //Called once rotation is completed.
 
     public GameObject GameObjectToMove
     {

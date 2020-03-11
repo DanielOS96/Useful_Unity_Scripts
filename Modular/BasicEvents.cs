@@ -3,9 +3,6 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
 
-[System.Serializable]
-public class MyGameobjectEvent : UnityEvent<GameObject> { }
-
 
 public class BasicEvents : MonoBehaviour
 {
