@@ -15,9 +15,9 @@ public class TestTrigger : MonoBehaviour
     void Update()
     {
         if (Input.GetKeyDown("t")) onT.Invoke();
-        if (Input.GetKeyDown("y")) onY.Invoke();
-        if (Input.GetKeyDown("u")) onY.Invoke();
-        if (Input.GetKeyDown("i")) onY.Invoke();
+        if (Input.GetKeyDown("y")) onYInvoke();
+        if (Input.GetKeyDown("u")) onU.Invoke();
+        if (Input.GetKeyDown("i")) onI.Invoke();
     }
 
 
