@@ -20,4 +20,29 @@ public class ToggleEvent : MonoBehaviour
         if (toggle) toggleOn.Invoke();
         else toggleOff.Invoke();
     }
+
+
+    //Directly control toggle.
+    public void ToggleOff()
+    {
+        toggle = false;
+        toggleOff.Invoke();
+    }
+
+    public void ToggleOn()
+    {
+        toggle = true;
+        toggleOn.Invoke();
+    }
+
+    public void ConditionalToggleOff()
+    {
+        if (toggle) ToggleOff();
+    }
+
+    public void ConditionalToggleOn()
+    {
+        if (!toggle) ToggleOn();
+    }
+
 }
