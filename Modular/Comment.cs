@@ -5,6 +5,7 @@
 public class Comment : MonoBehaviour
 {
     [TextArea(0,100)]
-    public string Notes = "Comment Here."; // Do not place your note/comment here. 
-                                           // Enter your note in the Unity Editor.
+    [SerializeField]
+    private string _notes = "Comment Here."; // Do not place your note/comment here. 
+                                            // Enter your note in the Unity Editor.
 }
