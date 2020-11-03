@@ -44,5 +44,8 @@ public class ToggleEvent : MonoBehaviour
     {
         if (!toggle) ToggleOn();
     }
+<<<<<<< Updated upstream
 
+=======
+>>>>>>> Stashed changes
 }
