@@ -23,7 +23,19 @@ public class FlashObject : MonoBehaviour
     }
 
 
+    public void RepeatingFlash(float timeToFlash)
+    {
+        StartCoroutine(RepeatFlash(timeToFlash));
+    }
 
+    private IEnumerator RepeatFlash(float timeToFlash)
+    {
+        while (true)
+        {
+            if (!flashCoroutineActive) yield return StartCoroutine(FlashMaterialCoroutine(timeToFlash));
+            yield return new WaitForSeconds(timeToFlash);
+        }
+    }
 
 
 
