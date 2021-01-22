@@ -3,12 +3,12 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
 /// <summary>
-/// Send out delegate with ID variable.
+/// Send out delegate with ID variable and gameobject.
 /// </summary>
 public class IDEventEmitter : MonoBehaviour
 {
 
-    public delegate void EmitEvent(int id);
+    public delegate void EmitEvent(int id, GameObject obj);
 
     public static EmitEvent emitEventWithID;
 
@@ -24,6 +24,7 @@ public class IDEventEmitter : MonoBehaviour
     public void EmitTheEventWithID()
     {
         if (emitEventWithID != null)
-            emitEventWithID.Invoke(m_eventID);
+            emitEventWithID.Invoke(m_eventID, gameObject);
     }
+
 }

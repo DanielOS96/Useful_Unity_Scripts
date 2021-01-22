@@ -7,14 +7,16 @@ using UnityEngine.Events;
 /// </summary>
 public class IDEventListner : MonoBehaviour
 {
-   
+    [System.Serializable]
+    public class MyGameobjectEvent : UnityEvent<GameObject> { } //Event to pass gameobject referance.
+
     public int EventIDToListenFor { get => m_eventIDToListenFor; set => m_eventIDToListenFor = value; }
 
     [SerializeField]
     private int m_eventIDToListenFor = 0;
 
     [SerializeField]
-    private UnityEvent onIDEventEmitted;
+    private MyGameobjectEvent onIDEventEmitted;
 
 
 
@@ -49,12 +51,12 @@ public class IDEventListner : MonoBehaviour
 
 
     //Called on ID event emitted from class IDEventListnable.
-    private void OnEmitted(int id)
+    private void OnEmitted(int id, GameObject obj)
     {
         //IF id's match call event.
         if (id == m_eventIDToListenFor)
         {
-            onIDEventEmitted.Invoke();
+            onIDEventEmitted.Invoke(obj);
         }
     }
 }
