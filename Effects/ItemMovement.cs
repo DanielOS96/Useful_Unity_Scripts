@@ -9,17 +9,21 @@ public class ItemMovement : MonoBehaviour
 {
 
     [Header("Movement Settings")]
-    [Range(-10,10)]
-    public float rotationSpeed = 5;         //The speed at which the item rotates.
-    public float bobSpeed = 0.2f;           //The speed at which the item bobs up and down.
-    public float bobDistanceMeters = 0.1f;  //The distance of the bob.
+    [Range(-10, 10)]
+    [SerializeField]
+    private float m_rotationSpeed = 5;         //The speed at which the item rotates.
+    [SerializeField]
+    private float m_bobSpeed = 0.2f;           //The speed at which the item bobs up and down.
+    [SerializeField]
+    private float m_bobDistanceMeters = 0.1f;  //The distance of the bob.
 
-    public bool MoveOnStart = true;         //Start movement when the scene starts.
+    [SerializeField]
+    private bool m_moveOnStart = true;         //Start movement when the scene starts.
 
 
-    void Start()
+    private void Start()
     {
-        if (MoveOnStart) StartMovement();
+        if (m_moveOnStart) StartMovement();
     }
 
 
@@ -28,8 +32,16 @@ public class ItemMovement : MonoBehaviour
     /// </summary>
     public void StartMovement()
     {
-        StartCoroutine(Rotate());
-        StartCoroutine(Bob());
+        if (m_rotationSpeed != 0)
+        {
+            StartCoroutine(Rotate());
+
+        }
+        if (m_bobSpeed != 0)
+        {
+            StartCoroutine(Bob());
+        }
+
     }
 
     /// <summary>
@@ -47,7 +59,7 @@ public class ItemMovement : MonoBehaviour
     {
         while (true)
         {
-            transform.Rotate(Vector3.up, rotationSpeed, Space.World);
+            transform.Rotate(Vector3.up, m_rotationSpeed, Space.World);
             yield return new WaitForEndOfFrame();
         }
     }
@@ -55,19 +67,19 @@ public class ItemMovement : MonoBehaviour
     private IEnumerator Bob()
     {
 
-        Vector3 topPosition = new Vector3(transform.position.x, transform.position.y + bobDistanceMeters, transform.position.z);
-        Vector3 bottomPosition = new Vector3(transform.position.x, transform.position.y - bobDistanceMeters, transform.position.z);
+        Vector3 topPosition = new Vector3(transform.position.x, transform.position.y + m_bobDistanceMeters, transform.position.z);
+        Vector3 bottomPosition = new Vector3(transform.position.x, transform.position.y - m_bobDistanceMeters, transform.position.z);
 
         while (true)
         {
             while (transform.position != bottomPosition)
             {
-                transform.position = Vector3.MoveTowards(transform.position, bottomPosition, bobSpeed * Time.deltaTime);
+                transform.position = Vector3.MoveTowards(transform.position, bottomPosition, m_bobSpeed * Time.deltaTime);
                 yield return new WaitForEndOfFrame();
             }
             while (transform.position != topPosition)
             {
-                transform.position = Vector3.MoveTowards(transform.position, topPosition, bobSpeed * Time.deltaTime);
+                transform.position = Vector3.MoveTowards(transform.position, topPosition, m_bobSpeed * Time.deltaTime);
                 yield return new WaitForEndOfFrame();
             }
         }
