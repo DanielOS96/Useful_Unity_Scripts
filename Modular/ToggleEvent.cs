@@ -3,49 +3,62 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
 
+/// <summary>
+/// This script will invoke on and off events through a toggle. 
+/// </summary>
 public class ToggleEvent : MonoBehaviour
 {
-    public UnityEvent toggleOn;
-    public UnityEvent toggleOff;
+    public UnityEvent m_toggleOn;   //Called when toggle is true.
+    public UnityEvent m_toggleOff;  //Called when toggle is false.
 
-    private bool toggle;
-
-
+    private bool m_toggle;  //This bool will be toggled.
 
 
-    public void PreformToggle()
+
+    /// <summary>
+    /// Perform the toggle and invoke unity event.
+    /// </summary>
+    public void PerformToggle()
     {
-        toggle = !toggle;
+        m_toggle = !m_toggle;
 
-        if (toggle) toggleOn.Invoke();
-        else toggleOff.Invoke();
+        if (m_toggle) m_toggleOn.Invoke();
+        else m_toggleOff.Invoke();
     }
 
 
-    //Directly control toggle.
+    /// <summary>
+    /// Toggle off and invoke event.
+    /// </summary>
     public void ToggleOff()
     {
-        toggle = false;
-        toggleOff.Invoke();
+        m_toggle = false;
+        m_toggleOff.Invoke();
     }
 
+    /// <summary>
+    /// Toggle on and invoke event.
+    /// </summary>
     public void ToggleOn()
     {
-        toggle = true;
-        toggleOn.Invoke();
+        m_toggle = true;
+        m_toggleOn.Invoke();
     }
 
+    /// <summary>
+    /// Toggle off if toggle is on and invoke event.
+    /// </summary>
     public void ConditionalToggleOff()
     {
-        if (toggle) ToggleOff();
+        if (m_toggle) ToggleOff();
     }
 
+    /// <summary>
+    /// Toggle on if toggle is off and invoke event.
+    /// </summary>
     public void ConditionalToggleOn()
     {
-        if (!toggle) ToggleOn();
+        if (!m_toggle) ToggleOn();
     }
-<<<<<<< Updated upstream
 
-=======
->>>>>>> Stashed changes
 }
