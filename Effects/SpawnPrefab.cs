@@ -8,30 +8,32 @@ using UnityEngine.Events;
 public class SpawnPrefab : MonoBehaviour
 {
     [System.Serializable]
-    public class GameObjectUnityEvent : UnityEvent<GameObject>{}
+    private class GameObjectUnityEvent : UnityEvent<GameObject>{}
 
+    [SerializeField]
+    private GameObject m_prefabToSpawn;    //The prefab to spawn.
+    [SerializeField]
+    private Transform m_spawnPosition;     //Position to spawn the prefab.
+    [SerializeField]
+    private Vector3 m_spawnPositionOffset; //Spawn position offset.
 
-    public GameObject prefab;           //Prefab to spawn.
-    public Transform spawnPosition;     //Position to spawn the prefab.
-    public Vector3 spawnPositionOffset; //Spawn position offset.
-
-    public GameObjectUnityEvent onPrefabSpawned;  //Event called after prefab is spawned.
+    private GameObjectUnityEvent m_onPrefabSpawned;  //Event called after prefab is spawned.
 
 
     public GameObject PrefabToSpawn     //Property to set the prefab value.
     {
-        get => prefab;
-        set => prefab = value;
+        get => m_prefabToSpawn;
+        set => m_prefabToSpawn = value;
     }
     public Transform SpawnPosition      //Property to set spawn position.
     {
-        get => spawnPosition;
-        set => spawnPosition = value;
+        get => m_spawnPosition;
+        set => m_spawnPosition = value;
     }
     public Vector3 SpawnPositionOffset  //Property to set spawn position offset.
     {
-        get => spawnPositionOffset;
-        set => spawnPositionOffset = value;
+        get => m_spawnPositionOffset;
+        set => m_spawnPositionOffset = value;
     }
 
 
@@ -42,12 +44,12 @@ public class SpawnPrefab : MonoBehaviour
     public void Spawn()
     {
         //If spawn position is null spawn at current position.
-        spawnPosition = spawnPosition == null ? transform : spawnPosition;
+        m_spawnPosition = m_spawnPosition == null ? transform : m_spawnPosition;
 
-        GameObject spawnedObj = Instantiate(prefab, spawnPosition.position+spawnPositionOffset, spawnPosition.rotation);
+        GameObject spawnedObj = Instantiate(m_prefabToSpawn, m_spawnPosition.position+m_spawnPositionOffset, m_spawnPosition.rotation);
 
         //Invoke event and pass the GameObject referance.
-        onPrefabSpawned.Invoke(spawnedObj); 
+        m_onPrefabSpawned.Invoke(spawnedObj); 
 
     }
 }

@@ -2,14 +2,16 @@
 using System.Collections.Generic;
 using UnityEngine;
 /// <summary>
-/// Make a list of objects flash via changing material or changing current materials colour.
+/// Make a gameobject flash bu changing it and all its childrens materials then return the original materials.
 /// </summary>
 public class FlashObject : MonoBehaviour
 {
-    public GameObject objectToFlash;    //The object to flash the material of.
-    public Material flashMaterial;      //The material to replace on the object.
+    [SerializeField]
+    private GameObject m_objectToFlash;    //The object to flash the material of.
+    [SerializeField]
+    private Material m_flashMaterial;      //The material to replace on the object.
 
-    private bool flashCoroutineActive;  //Wether the flash coroutine is active.
+    private bool m_flashCoroutineActive;  //Wether the flash coroutine is active.
 
     
 
@@ -19,45 +21,49 @@ public class FlashObject : MonoBehaviour
     /// <param name="timeToFlash">Time flash will take.</param>
     public void FlashMaterial(float timeToFlash)
     {
-        if (!flashCoroutineActive) StartCoroutine(FlashMaterialCoroutine(timeToFlash));
+        if (!m_flashCoroutineActive) StartCoroutine(FlashMaterialCoroutine(timeToFlash));
     }
 
-
+    /// <summary>
+    /// Repeat the flashing effect.
+    /// </summary>
+    /// <param name="timeToFlash">Time the flash will take.</param>
     public void RepeatingFlash(float timeToFlash)
     {
         StartCoroutine(RepeatFlash(timeToFlash));
     }
 
+    //Invoke the flash repeditavly.
     private IEnumerator RepeatFlash(float timeToFlash)
     {
         while (true)
         {
-            if (!flashCoroutineActive) yield return StartCoroutine(FlashMaterialCoroutine(timeToFlash));
+            if (!m_flashCoroutineActive) yield return StartCoroutine(FlashMaterialCoroutine(timeToFlash));
             yield return new WaitForSeconds(timeToFlash);
         }
     }
 
 
-
+    //Flash the object to the specified material then back.
     private IEnumerator FlashMaterialCoroutine(float _flashDuration)
     {
         List<GameObject> gameobjects = new List<GameObject>();
         List<Material> oldMaterials = new List<Material>();
-        flashCoroutineActive = true;
+        m_flashCoroutineActive = true;
 
         //Add parent gameobject
-        Material mat = objectToFlash.GetComponent<Renderer>().material;
+        Material mat = m_objectToFlash.GetComponent<Renderer>().material;
         if (mat != null)
         {
             oldMaterials.Add(mat);
-            gameobjects.Add(objectToFlash.gameObject);
+            gameobjects.Add(m_objectToFlash.gameObject);
 
             //Set parent material.
-            objectToFlash.GetComponent<Renderer>().material = flashMaterial;
+            m_objectToFlash.GetComponent<Renderer>().material = m_flashMaterial;
         }
 
         //Add children gamobejcts
-        foreach (Transform child in objectToFlash.transform)
+        foreach (Transform child in m_objectToFlash.transform)
         {
             Material childMat = child.GetComponent<Renderer>().material;
             if (childMat != null)
@@ -66,7 +72,7 @@ public class FlashObject : MonoBehaviour
                 gameobjects.Add(child.gameObject);
 
                 //Set child material.
-                child.GetComponent<Renderer>().material = flashMaterial;
+                child.GetComponent<Renderer>().material = m_flashMaterial;
             }
         }
 
@@ -79,7 +85,7 @@ public class FlashObject : MonoBehaviour
             if (gameobjects[i]!=null)gameobjects[i].GetComponent<Renderer>().material = oldMaterials[i];
         }
 
-        flashCoroutineActive = false;
+        m_flashCoroutineActive = false;
     }
 
 

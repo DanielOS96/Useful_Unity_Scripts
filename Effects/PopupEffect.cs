@@ -4,26 +4,32 @@ using UnityEngine;
 using UnityEngine.Events;
 
 /// <summary>
-/// Preform Popup effect on gameobject.
+/// Perform popup effect on a gameobject.
+/// <para>Gameobject will be scaled from a small size to a larger size then back down to its original size.</para>
 /// </summary>
 public class PopupEffect : MonoBehaviour
 {
     [Range(0.1f, 5)]
-    public float animationLength = 0.5f;
+    [SerializeField]
+    private float m_animationLength = 0.5f;     //The length the resize will take to complete in seconds.
     [Range(0, 1)]
-    public float startSizePercent = 0.1f;
+    [SerializeField]
+    private float m_startSizePercent = 0.1f;    //The percent scale the item will begin the resize from.
     [Range(0.1f, 1)]
-    public float enlargedSizePercent = 0.3f;
+    [SerializeField]
+    private float m_enlargedSizePercent = 0.3f; //The percent scale the item will enlarge to before going to original size.
 
 
-    public UnityEvent popupStart;               //Called when the popup starts.
-    public UnityEvent popupComplete;            //Called when the popup animation has finished.
+    [SerializeField]
+    private UnityEvent m_popupStart;               //Called when the popup starts.
+    [SerializeField]
+    private UnityEvent m_popupComplete;            //Called when the popup animation has finished.
 
 
-    private Vector3[] sizes = new Vector3[5];   //Array of sizes to scale to.
-    private Vector3 originalSize;               //Referance to the original size of the gameobject.
+    private Vector3[] m_sizes = new Vector3[5];   //Array of sizes to scale to.
+    private Vector3 m_originalSize;               //Referance to the original size of the gameobject.
 
-    private int currentIndex;                   //The index of the sizes array.
+    private int m_currentIndex;                   //The index of the sizes array.
 
 
 
@@ -35,29 +41,29 @@ public class PopupEffect : MonoBehaviour
 
     private void OnEnable()
     {
-        originalSize = gameObject.transform.localScale;
+        m_originalSize = gameObject.transform.localScale;
     }
 
 
     /// <summary>
-    /// Preform the popup animation.
+    /// Perform the popup animation.
     /// </summary>
     public void StartPopup()
     {
-        popupStart.Invoke();
+        m_popupStart.Invoke();
 
 
         StopAllCoroutines();
-        currentIndex = 1;
+        m_currentIndex = 1;
 
         //Setup the sizes that will be scaled to during the animation.
-        sizes[0] = originalSize * startSizePercent;
-        sizes[1] = originalSize + originalSize * enlargedSizePercent;
-        sizes[2] = originalSize - originalSize * 0.1f;
-        sizes[3] = originalSize + originalSize * 0.1f;
-        sizes[4] = originalSize;
+        m_sizes[0] = m_originalSize * m_startSizePercent;
+        m_sizes[1] = m_originalSize + m_originalSize * m_enlargedSizePercent;
+        m_sizes[2] = m_originalSize - m_originalSize * 0.1f;
+        m_sizes[3] = m_originalSize + m_originalSize * 0.1f;
+        m_sizes[4] = m_originalSize;
 
-        gameObject.transform.localScale = sizes[0];
+        gameObject.transform.localScale = m_sizes[0];
 
 
         GoToNextSize();
@@ -66,15 +72,15 @@ public class PopupEffect : MonoBehaviour
     //Go to the next size in the array.
     private void GoToNextSize()
     {
-        if (sizes.Length > currentIndex)
+        if (m_sizes.Length > m_currentIndex)
         {
-            StartCoroutine(ScaleOverSeconds(sizes[currentIndex], animationLength/sizes.Length));
-            currentIndex++;
+            StartCoroutine(ScaleOverSeconds(m_sizes[m_currentIndex], m_animationLength/m_sizes.Length));
+            m_currentIndex++;
         }
         else
         {
-            currentIndex = 1;
-            popupComplete.Invoke();
+            m_currentIndex = 1;
+            m_popupComplete.Invoke();
         }
         
     }

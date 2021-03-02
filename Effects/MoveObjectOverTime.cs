@@ -8,82 +8,94 @@ using UnityEngine.Events;
 public class MoveObjectOverTime : MonoBehaviour
 {
     [System.Serializable]
-    public class GameObjectUnityEvent : UnityEvent<GameObject> {}
+    private class GameObjectUnityEvent : UnityEvent<GameObject> { }
 
-    public enum MoveType {move, rotate, both }
+    private enum MoveType { move, rotate, both }
 
-    public MoveType moveType = MoveType.move;   //The type of movement lerp that will be preformed.
 
-    public Transform transfromToMove;           //The transform to apply the movements to.
-    public Transform startTransform;            //The start position the transformToMove will begin its movement from.
-    public Transform endTransform;              //The end position the transformToMove will end up at.
-    public float movementTime;                  //The time in which the movement will take place over.
-    public float delayBeforeMove;               //The delay before the movement is preformed after being called.
-    public bool worldSpace = true;              //Weather to preform the move in world space or local space.
+    [SerializeField]
+    private MoveType m_moveType = MoveType.move;   //The type of movement lerp that will be preformed.
+
+    [SerializeField]
+    private Transform m_transfromToMove;           //The transform to apply the movements to.
+    [SerializeField]
+    private Transform m_startTransform;            //The start position the transformToMove will begin its movement from.
+    [SerializeField]
+    private Transform m_endTransform;              //The end position the transformToMove will end up at.
+    [SerializeField]
+    public float m_movementTime;                   //The time in which the movement will take place over.
+    [SerializeField]
+    private float m_rotationSpeed = 100;           //The speed at which the rotation will take place.
+    [SerializeField]
+    private float m_delayBeforeMove;               //The delay before the movement is preformed after being called.
+    [SerializeField]
+    private bool m_worldSpace = true;              //Weather to preform the move in world space or local space.
 
     [Header("Events")]
-    public GameObjectUnityEvent onMovementStarted;        //Called once movement is started.
-    public GameObjectUnityEvent onMovementComplete;       //Called once movement is completed.
-    public GameObjectUnityEvent onRotationStarted;        //Called once rotation is started.
-    public GameObjectUnityEvent onRotationCompleted;      //Called once rotation is completed.
-
+    [SerializeField]
+    private GameObjectUnityEvent onMovementStarted;        //Called once movement is started.
+    [SerializeField]
+    private GameObjectUnityEvent onMovementComplete;       //Called once movement is completed.
+    [SerializeField]
+    private GameObjectUnityEvent onRotationStarted;        //Called once rotation is started.
+    [SerializeField]
+    private GameObjectUnityEvent onRotationCompleted;      //Called once rotation is completed.
 
     public GameObject GameObjectToMove
     {
         get
         {
-            return transfromToMove.gameObject;
+            return m_transfromToMove.gameObject;
         }
         set
         {
-            transfromToMove = value.transform;
-            if (startTransform == null) startTransform = value.transform;
+            m_transfromToMove = value.transform;
+            if (m_startTransform == null) m_startTransform = value.transform;
         }
     }
     public GameObject GameObjectStartPosition
     {
         get
         {
-            return startTransform.gameObject;
+            return m_startTransform.gameObject;
         }
         set
         {
-            startTransform = value.transform;
+            m_startTransform = value.transform;
         }
     }
     public GameObject GameObjectEndPosition
     {
         get
         {
-            return endTransform.gameObject;
+            return m_endTransform.gameObject;
         }
         set
         {
-            endTransform = value.transform;
+            m_endTransform = value.transform;
         }
     }
-
 
     /// <summary>
     /// Start the movement of the item.
     /// </summary>
     public void StartMovement()
     {
-        if (worldSpace)
+        if (m_worldSpace)
         {
-            if (moveType == MoveType.move || moveType == MoveType.both)
-                StartCoroutine(MoveOverSeconds(transfromToMove, startTransform.position, endTransform.position, movementTime, delayBeforeMove));
+            if (m_moveType == MoveType.move || m_moveType == MoveType.both)
+                StartCoroutine(MoveOverSeconds(m_transfromToMove, m_startTransform.position, m_endTransform.position, m_movementTime, m_delayBeforeMove));
 
-            if (moveType == MoveType.rotate || moveType == MoveType.both)
-                StartCoroutine(RotateOverSeconds(transfromToMove, startTransform.rotation, endTransform.rotation, movementTime, delayBeforeMove));
+            if (m_moveType == MoveType.rotate || m_moveType == MoveType.both)
+                StartCoroutine(RotateOverSeconds(m_transfromToMove, m_startTransform.rotation, m_endTransform.rotation, m_movementTime, m_delayBeforeMove));
         }
         else
         {
-            if (moveType == MoveType.move || moveType == MoveType.both)
-                StartCoroutine(MoveOverSeconds(transfromToMove, startTransform.localPosition, endTransform.localPosition, movementTime, delayBeforeMove));
+            if (m_moveType == MoveType.move || m_moveType == MoveType.both)
+                StartCoroutine(MoveOverSeconds(m_transfromToMove, m_startTransform.localPosition, m_endTransform.localPosition, m_movementTime, m_delayBeforeMove));
 
-            if (moveType == MoveType.rotate || moveType == MoveType.both)
-                StartCoroutine(RotateOverSeconds(transfromToMove, startTransform.localRotation, endTransform.localRotation, movementTime, delayBeforeMove));
+            if (m_moveType == MoveType.rotate || m_moveType == MoveType.both)
+                StartCoroutine(RotateOverSeconds(m_transfromToMove, m_startTransform.localRotation, m_endTransform.localRotation, m_movementTime, m_delayBeforeMove));
         }
     }
 
@@ -97,7 +109,7 @@ public class MoveObjectOverTime : MonoBehaviour
 
         while (elapsedTime < seconds)
         {
-            if (worldSpace) objectToMove.position = Vector3.Lerp(start, end, (elapsedTime / seconds));
+            if (m_worldSpace) objectToMove.position = Vector3.Lerp(start, end, (elapsedTime / seconds));
             else objectToMove.localPosition = Vector3.Lerp(start, end, (elapsedTime / seconds));
 
 
@@ -105,7 +117,7 @@ public class MoveObjectOverTime : MonoBehaviour
             yield return new WaitForEndOfFrame();
         }
 
-        if (worldSpace)objectToMove.position = end;
+        if (m_worldSpace) objectToMove.position = end;
         else objectToMove.localPosition = end;
 
         onMovementComplete.Invoke(objectToMove.gameObject);
@@ -121,14 +133,14 @@ public class MoveObjectOverTime : MonoBehaviour
 
         while (elapsedTime < seconds)
         {
-            if (worldSpace)objectToRotate.transform.rotation = Quaternion.Lerp(start, end, (elapsedTime / seconds));
+            if (m_worldSpace) objectToRotate.transform.rotation = Quaternion.Lerp(start, end, (elapsedTime / seconds));
             else objectToRotate.transform.localRotation = Quaternion.Lerp(start, end, (elapsedTime / seconds));
 
 
             elapsedTime += Time.deltaTime;
             yield return new WaitForEndOfFrame();
         }
-        if (worldSpace) objectToRotate.rotation = end;
+        if (m_worldSpace) objectToRotate.rotation = end;
         else objectToRotate.localRotation = end;
 
         onRotationCompleted.Invoke(objectToRotate.gameObject);

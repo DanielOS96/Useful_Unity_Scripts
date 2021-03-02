@@ -2,28 +2,34 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
-
+/// <summary>
+/// Perform the popdown effect on a gameobject.
+/// </summary>
 public class PopdownEffect : MonoBehaviour
 {
     [Range(0.1f, 5)]
-    public float animationLength = 0.5f;
+    [SerializeField]
+    private float m_animationLength = 0.5f;     //The length the resize will take to complete in seconds.
     [Range(0, 0.9f)]
-    public float endSizePercent = 0.1f;
+    [SerializeField]
+    private float m_endSizePercent = 0.1f;      //The percent scale the item will begin the resize from.
     [Range(0.1f, 1)]
-    public float enlargedSizePercent = 0.3f;
+    [SerializeField]
+    private float m_enlargedSizePercent = 0.3f;     //The percent scale the item will enlarge to before going to original size.
 
-    public bool returnToOriginalSize;
+    [SerializeField]
+    private bool m_returnToOriginalSize;            //Return to original size after popdown animation complete.
+
+    [SerializeField]
+    private UnityEvent m_popdownStart;               //Called when the popdown animation has started.
+    [SerializeField]
+    private UnityEvent m_popdownComplete;            //Called when the popdown animation has finished.
 
 
-    public UnityEvent popdownStart;               //Called when the popdown animation has started.
-    public UnityEvent popdownComplete;            //Called when the popdown animation has finished.
+    private Vector3 m_originalSize;               //Referance to the original size of the gameobject.
 
-
-    private Vector3[] sizes = new Vector3[2];   //Array of sizes to scale to.
-    private Vector3 originalSize;               //Referance to the original size of the gameobject.
-
-    private Vector3 enlargedSize;
-    private Vector3 endSize;
+    private Vector3 m_enlargedSize;
+    private Vector3 m_endSize;
 
 
 
@@ -34,35 +40,36 @@ public class PopdownEffect : MonoBehaviour
 
     private void OnEnable()
     {
-        originalSize = gameObject.transform.localScale;
+        m_originalSize = gameObject.transform.localScale;
     }
 
 
     /// <summary>
-    /// Preform the popup animation.
+    /// Perform the popdown animation.
     /// </summary>
     public void StartPopdown()
     {
         StopAllCoroutines();
 
-        enlargedSize = originalSize + originalSize * enlargedSizePercent;
-        endSize = originalSize * endSizePercent;
+        m_enlargedSize = m_originalSize + m_originalSize * m_enlargedSizePercent;
+        m_endSize = m_originalSize * m_endSizePercent;
 
 
-        gameObject.transform.localScale = originalSize;
+        gameObject.transform.localScale = m_originalSize;
 
-        popdownStart.Invoke();
+        m_popdownStart.Invoke();
 
         StartCoroutine(Scale());
 
     }
 
+    //The paceing of the movements.
     private IEnumerator Scale()
     {
-        yield return StartCoroutine(ScaleOverSeconds(enlargedSize,animationLength/2));
-        yield return StartCoroutine(ScaleOverSeconds(endSize, animationLength / 2));
-        popdownComplete.Invoke();
-        if (returnToOriginalSize) gameObject.transform.localScale = originalSize;
+        yield return StartCoroutine(ScaleOverSeconds(m_enlargedSize,m_animationLength/2));
+        yield return StartCoroutine(ScaleOverSeconds(m_endSize, m_animationLength / 2));
+        m_popdownComplete.Invoke();
+        if (m_returnToOriginalSize) gameObject.transform.localScale = m_originalSize;
     }
 
 

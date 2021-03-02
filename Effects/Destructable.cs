@@ -6,11 +6,17 @@ using UnityEngine;
 /// </summary>
 public class Destructable : MonoBehaviour
 {
-    public GameObject destroyedVersion;
+    [SerializeField]
+    private GameObject m_destroyedVersion;  //The destroyed version prefab.
 
 
-    public void Destroy(float lifeTime=3) {
-        Destroy(Instantiate(destroyedVersion, transform.position, transform.rotation),lifeTime);
+    /// <summary>
+    /// Destroy this gameobject and instantiate new 'destroyed' version.
+    /// </summary>
+    /// <param name="lifeTime">Lifetime of instantiated version.</param>
+    public void Destroy(float lifeTime = 3) 
+    {
+        Destroy(Instantiate(m_destroyedVersion, transform.position, transform.rotation),lifeTime);
         
         Destroy(gameObject);
     }
