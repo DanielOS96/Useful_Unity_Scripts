@@ -3,30 +3,38 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
 using TMPro;
-
-public class Incramenter : MonoBehaviour
+/// <summary>
+/// Increment towards the target value. Invoke event when target value is reached. 
+/// </summary>
+public class Incrementer : MonoBehaviour
 {
-    public int StoredValue { get => _storedValue; set => _storedValue = value; }
+    public int StoredValue { get => m_storedValue; set => m_storedValue = value; }
 
     [SerializeField]
-    private TextMeshPro _textMesh;
+    private TextMeshPro m_textMesh; //A text mesh output of the current value.
 
     [SerializeField]
-    private int targetValue;
+    private int m_targetValue;  //The target value to reach.
     [SerializeField]
-    private UnityEvent onTargetValueReached;
+    private UnityEvent m_onTargetValueReached;  //Invoked when target value is reached.
 
-    private int _storedValue;
+    private int m_storedValue;  //The value that will be incramented to the target value.
 
-    public void Incrament(int value = 1)
+
+    /// <summary>
+    /// Increment towards the target value. 
+    /// </summary>
+    /// <param name="value">Value to increment by.</param>
+    public void Increment(int value = 1)
     {
-        _storedValue += value;
+        m_storedValue += value;
 
-        if (_textMesh!=null)_textMesh.text = _storedValue.ToString();
+        if (m_textMesh!=null)m_textMesh.text = m_storedValue.ToString();
 
-        if (_storedValue == targetValue)
+        //Stored value must be exactly target value.
+        if (m_storedValue == m_targetValue)
         {
-            onTargetValueReached.Invoke();
+            m_onTargetValueReached.Invoke();
         }
     }
 

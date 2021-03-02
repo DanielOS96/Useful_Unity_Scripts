@@ -8,17 +8,17 @@ public class SetTransform : MonoBehaviour
 {
    
 
-    public bool Local { get => _local; set => _local = value; }
+    public bool Local { get => m_local; set => m_local = value; }
 
     [SerializeField]
-    private Transform _targetTransform; //Set the target transform.
+    private Transform m_targetTransform; //Set the target transform.
     [SerializeField]
-    private bool _local;    //Set local or world values.
+    private bool m_local;    //Set local or world values.
 
 
     private void Awake()
     {
-        _targetTransform = _targetTransform == null ? _targetTransform = transform : _targetTransform;
+        m_targetTransform = m_targetTransform == null ? m_targetTransform = transform : m_targetTransform;
     }
 
     #region Offset Position Methods
@@ -29,13 +29,13 @@ public class SetTransform : MonoBehaviour
     /// <param name="offset">'X' axis offset.</param>
     public void SetOffsetXPosition(float xOffset)
     {
-        if (!_local)
+        if (!m_local)
         {
-            _targetTransform.position = new Vector3((_targetTransform.position.x + xOffset), _targetTransform.position.y, _targetTransform.position.z);
+            m_targetTransform.position = new Vector3((m_targetTransform.position.x + xOffset), m_targetTransform.position.y, m_targetTransform.position.z);
         }
         else
         {
-            _targetTransform.localPosition = new Vector3((_targetTransform.localPosition.x + xOffset), _targetTransform.localPosition.y, _targetTransform.localPosition.z);
+            m_targetTransform.localPosition = new Vector3((m_targetTransform.localPosition.x + xOffset), m_targetTransform.localPosition.y, m_targetTransform.localPosition.z);
         }
     }
 
@@ -45,13 +45,13 @@ public class SetTransform : MonoBehaviour
     /// <param name="offset">'Y' axis offset.</param>
     public void SetOffsetYPosition(float yOffset)
     {
-        if (!_local)
+        if (!m_local)
         {
-            _targetTransform.position = new Vector3(_targetTransform.position.x, (_targetTransform.position.y + yOffset), _targetTransform.position.z);
+            m_targetTransform.position = new Vector3(m_targetTransform.position.x, (m_targetTransform.position.y + yOffset), m_targetTransform.position.z);
         }
         else
         {
-            _targetTransform.localPosition = new Vector3(_targetTransform.localPosition.x, (_targetTransform.localPosition.y + yOffset), _targetTransform.localPosition.z);
+            m_targetTransform.localPosition = new Vector3(m_targetTransform.localPosition.x, (m_targetTransform.localPosition.y + yOffset), m_targetTransform.localPosition.z);
         }
     }
 
@@ -61,13 +61,13 @@ public class SetTransform : MonoBehaviour
     /// <param name="offset">'Z' axis offset.</param>
     public void SetOffsetZPosition(float zOffset)
     {
-        if (!_local)
+        if (!m_local)
         {
-            _targetTransform.position = new Vector3(_targetTransform.position.x, _targetTransform.position.y, (_targetTransform.position.z + zOffset));
+            m_targetTransform.position = new Vector3(m_targetTransform.position.x, m_targetTransform.position.y, (m_targetTransform.position.z + zOffset));
         }
         else
         {
-            _targetTransform.localPosition = new Vector3(_targetTransform.localPosition.x, _targetTransform.localPosition.y, (_targetTransform.localPosition.z + zOffset));
+            m_targetTransform.localPosition = new Vector3(m_targetTransform.localPosition.x, m_targetTransform.localPosition.y, (m_targetTransform.localPosition.z + zOffset));
         }
     }
     #endregion
@@ -78,13 +78,13 @@ public class SetTransform : MonoBehaviour
     /// <param name="transformPosition">The new position.</param>
     public void SetPosition(Transform transformPosition)
     {
-        if (!_local)
+        if (!m_local)
         {
-            _targetTransform.position = transformPosition.position;
+            m_targetTransform.position = transformPosition.position;
         }
         else
         {
-            _targetTransform.localPosition = transformPosition.position;
+            m_targetTransform.localPosition = transformPosition.position;
         }
     }
 
@@ -94,13 +94,13 @@ public class SetTransform : MonoBehaviour
     /// <param name="transformEulerRotation">The new euler rotation.</param>
     public void SetRotationEuler(Transform transformEulerRotation)
     {
-        if (!_local)
+        if (!m_local)
         {
-            _targetTransform.eulerAngles = transformEulerRotation.eulerAngles;
+            m_targetTransform.eulerAngles = transformEulerRotation.eulerAngles;
         }
         else
         {
-            _targetTransform.localEulerAngles = transformEulerRotation.localEulerAngles;
+            m_targetTransform.localEulerAngles = transformEulerRotation.localEulerAngles;
         }
     }
 
@@ -110,13 +110,13 @@ public class SetTransform : MonoBehaviour
     /// <param name="transformQuaternionRotation">The new quaternian rotation.</param>
     public void SetRotationQuaternion(Transform transformQuaternionRotation)
     {
-        if (!_local)
+        if (!m_local)
         {
-            _targetTransform.rotation = transformQuaternionRotation.rotation;
+            m_targetTransform.rotation = transformQuaternionRotation.rotation;
         }
         else
         {
-            _targetTransform.localRotation = transformQuaternionRotation.localRotation;
+            m_targetTransform.localRotation = transformQuaternionRotation.localRotation;
         }
     }
 
@@ -126,7 +126,7 @@ public class SetTransform : MonoBehaviour
     /// <param name="transformScale">The new scale.</param>
     public void SetScale(Transform transformScale)
     {
-        _targetTransform.localScale = transformScale.localScale;
+        m_targetTransform.localScale = transformScale.localScale;
     }
     
 }

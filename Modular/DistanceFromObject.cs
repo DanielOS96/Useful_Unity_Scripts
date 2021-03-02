@@ -4,23 +4,36 @@ using UnityEngine;
 using UnityEngine.Events;
 
 
-[System.Serializable]
-public class MyFloatEvent : UnityEvent<float> { }
 
+/// <summary>
+/// Check if target GameObject is within set range and invoke event.
+/// <para> Call float event when within threshold of the GameObject.</para> 
+/// </summary>
 public class DistanceFromObject : MonoBehaviour
 {
-    public List<GameObject> targets = new List<GameObject>();  //Targets to monitor.
 
-    public float upperThreshold = 1.5f;     //Upper distance to calculate proxmity.
-    public float lowerThreshold = 0.5f;     //Lower distance to calculate proximity
-    public float triggerDistance = 1;       //Distance to trigger event.
+    [System.Serializable]
+    private class MyFloatEvent : UnityEvent<float> { }
 
-    public UnityEvent onObjectInRange;      //Event called when player is in range. 
-    public UnityEvent onObjectOutOfRange;   //Event called when player is out of range.
-    public MyFloatEvent onProximityChanged; //Dyanmic event called when in proximity with a normalized proximity value.
+    [SerializeField]
+    private List<GameObject> m_targets = new List<GameObject>();  //Targets to monitor.
 
-    private bool inRange;
-    private bool outOfRange;
+    [SerializeField]
+    private float m_upperThreshold = 1.5f;     //Upper distance to calculate proxmity.
+    [SerializeField]
+    private float m_lowerThreshold = 0.5f;     //Lower distance to calculate proximity.
+    [SerializeField]
+    private float m_triggerDistance = 1;       //Distance to trigger event.
+
+    [SerializeField]
+    private UnityEvent m_onObjectInRange;      //Event called when player is in range. 
+    [SerializeField]
+    private UnityEvent m_onObjectOutOfRange;   //Event called when player is out of range.
+    [SerializeField]
+    private MyFloatEvent m_onProximityChanged; //Dyanmic event called when in proximity with a normalized proximity value.
+
+    private bool m_inRange;
+    private bool m_outOfRange;
 
 
     /// <summary>
@@ -29,14 +42,14 @@ public class DistanceFromObject : MonoBehaviour
     /// <param name="target">Target object</param>
     public void SetTarget(GameObject target)
     {
-        targets.Add(target);
+        m_targets.Add(target);
     }
 
 
     // Update is called once per frame
     private void Update()
     {
-        foreach (GameObject t in targets)
+        foreach (GameObject t in m_targets)
         {
             if (t!=null)CheckTargetDistance(t.transform.position);
         }
@@ -49,38 +62,38 @@ public class DistanceFromObject : MonoBehaviour
     private void CheckTargetDistance(Vector3 targetPos)
     {
 
-        float targetDist = Vector3.Distance(transform.position,targetPos) - lowerThreshold;
+        float targetDist = Vector3.Distance(transform.position,targetPos) - m_lowerThreshold;
 
 
         //Check if target in trigger istnace.
-        if (targetDist < triggerDistance)
+        if (targetDist < m_triggerDistance)
         {
-            outOfRange = false;
-            if (inRange == false)
+            m_outOfRange = false;
+            if (m_inRange == false)
             {
-                inRange = true;
-                onObjectInRange.Invoke();
+                m_inRange = true;
+                m_onObjectInRange.Invoke();
             }
         }
         else
         {
-            inRange = false;
-            if (outOfRange == false)
+            m_inRange = false;
+            if (m_outOfRange == false)
             {
-                outOfRange = true;
-                onObjectOutOfRange.Invoke();
+                m_outOfRange = true;
+                m_onObjectOutOfRange.Invoke();
             }
         }
 
 
 
         //Call a dyanmic normalised proximity event.
-        if (targetDist <= upperThreshold)
+        if (targetDist <= m_upperThreshold)
         {
-            float normalisedValue = Mathf.Clamp( targetDist / upperThreshold,0,1);
+            float normalisedValue = Mathf.Clamp( targetDist / m_upperThreshold,0,1);
             
 
-            onProximityChanged.Invoke(normalisedValue);
+            m_onProximityChanged.Invoke(normalisedValue);
 
             //Debug.Log(normalisedValue);
         }

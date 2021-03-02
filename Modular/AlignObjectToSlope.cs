@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using UnityEngine;
 /// <summary>
 /// Align game object to the surface normals it is on. 
-/// <para>(Sometimes rotation can get screwd up and is not facing the player)</para>
 /// </summary>
 public class AlignObjectToSlope : MonoBehaviour
 {

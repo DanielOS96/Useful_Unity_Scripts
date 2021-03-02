@@ -16,7 +16,7 @@ public class IDEventListner : MonoBehaviour
     private int m_eventIDToListenFor = 0;
 
     [SerializeField]
-    private MyGameobjectEvent onIDEventEmitted;
+    private MyGameobjectEvent m_onIDEventEmitted;
 
 
 
@@ -56,7 +56,7 @@ public class IDEventListner : MonoBehaviour
         //IF id's match call event.
         if (id == m_eventIDToListenFor)
         {
-            onIDEventEmitted.Invoke(obj);
+            m_onIDEventEmitted.Invoke(obj);
         }
     }
 }

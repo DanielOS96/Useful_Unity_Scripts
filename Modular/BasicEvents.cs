@@ -3,7 +3,9 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
 
-
+/// <summary>
+/// Some basic MonoBehaviour and proxy methods invoking UnityEvents. 
+/// </summary>
 public class BasicEvents : MonoBehaviour
 {
     [Header("MonoBehaviour Events")]

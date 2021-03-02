@@ -2,64 +2,74 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
-
+/// <summary>
+/// Check transform against target value. 
+/// </summary>
 public class CheckTransform : MonoBehaviour
 {
-    public bool Local { get => _local; set => _local = value; }
-    public float TargetValue { get => _targetValue; set => _targetValue = value; }
+    public bool Local { get => m_local; set => m_local = value; }
+    public float TargetValue { get => m_targetValue; set => m_targetValue = value; }
 
     [SerializeField]
-    private Transform _targetTransform; //Set the target transform.
+    private Transform m_targetTransform; //Set the target transform.
     [SerializeField]
-    private float _targetValue; //The value to reach.
+    private float m_targetValue; //The value to reach.
     [SerializeField]
-    private bool _local;    //Set local or world values.
+    private bool m_local;    //Set local or world values.
     
 
     [Header("Check Result Events")]
     [SerializeField]
-    private UnityEvent _transformReachedValue;
+    private UnityEvent m_transformReachedValue;
     [SerializeField]
-    private UnityEvent _transformAboveValue;
+    private UnityEvent m_transformAboveValue;
     [SerializeField]
-    private UnityEvent _transformBelowValue;
+    private UnityEvent m_transformBelowValue;
 
+    /// <summary>
+    /// Check if transform position reached target on the 'y' axis and call event.
+    /// </summary>
     public void CheckPositionYReached()
     {
-        Debug.Log("TargetVal: " + _targetValue + " TransformPosY: " + _targetTransform.position.y);
+        Debug.Log("TargetVal: " + m_targetValue + " TransformPosY: " + m_targetTransform.position.y);
 
-        if (!_local)
+        if (!m_local)
         {
-            if (_targetTransform.position.y == _targetValue)
+            if (m_targetTransform.position.y == m_targetValue)
             {
-                _transformReachedValue.Invoke();
+                m_transformReachedValue.Invoke();
             }
-            else if (_targetTransform.position.y > _targetValue)
+            else if (m_targetTransform.position.y > m_targetValue)
             {
-                _transformAboveValue.Invoke();
+                m_transformAboveValue.Invoke();
             }
-            else if (_targetTransform.position.y < _targetValue)
+            else if (m_targetTransform.position.y < m_targetValue)
             {
-                _transformBelowValue.Invoke();
+                m_transformBelowValue.Invoke();
             }
         }
         else
         {
-            if (_targetTransform.localPosition.y == _targetValue)
+            if (m_targetTransform.localPosition.y == m_targetValue)
             {
-                _transformReachedValue.Invoke();
+                m_transformReachedValue.Invoke();
             }
-            else if (_targetTransform.localPosition.y > _targetValue)
+            else if (m_targetTransform.localPosition.y > m_targetValue)
             {
-                _transformAboveValue.Invoke();
+                m_transformAboveValue.Invoke();
             }
-            else if (_targetTransform.localPosition.y < _targetValue)
+            else if (m_targetTransform.localPosition.y < m_targetValue)
             {
-                _transformBelowValue.Invoke();
+                m_transformBelowValue.Invoke();
             }
         }
     }
 
+    //Implement functionality for 'x' axis position check. 
+    //Implement functionality for 'y' axis position check. 
+    //Implement functionality for 'x' axis  euler check. 
+    //Implement functionality for 'y' axis  euler check. 
+    //Implement functionality for 'z' axis  euler check. 
 
 
 }
