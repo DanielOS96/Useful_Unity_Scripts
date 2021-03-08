@@ -5,51 +5,55 @@ using UnityEngine.UI;
 using UnityEngine.Events;
 using UnityEngine.SceneManagement;
 /// <summary>
-/// Script handles the selection of the transforms.
-/// Effects and movement of the transforms are done in this script.
-/// -Objects will be moved to a target transform over a space of time.
-/// -Event is triggerd when transform is reached.
-/// -Handles the effects presented on the move. Visual and Audio.
+/// Select an object over a certain time. 
+/// <para>-Optional movement of object during the duration of the selection.</para>
+/// <para>-Call OnSelected() to begin selection process.</para>
+/// <para>-Call OnUnselected() to cancel selection process.</para>
+/// <para>-Includes method to return to origin position.</para>
+/// <para>-Oprion to disable other instances when selection complete.</para>
 /// </summary>
 public class TransformSelect : MonoBehaviour
 {   
     [Header("Setup Variables")]
-    public float timeToFinishSelect = 5;    //Time in seconds it will take to finish the selecting process.
-    public float delayAfterSelected = 2;      //The delay after the selection is complete.
-    public bool disableOtherInstances;      //All other instances of the script will be disabled when this is clicked.
-    public string sceneToLoadName;          //The scene that will load when transform is fully selected.
-    public UnityEvent onSelectEvent;        //The event that is called when the selection process begins.
-    public UnityEvent onSelectDelayEvent;   //The event that is called when the selection process begins.
-    public UnityEvent onSelectingEvent;     //The event that is called when the selection process ends.
-    public UnityEvent onUnSelectingEvent;   //The event that is called when the selection process is completed.
-
+    [SerializeField]
+    internal float m_timeToFinishSelect = 5;    //Time in seconds it will take to finish the selecting process.
+    [SerializeField]
+    internal bool m_disableOtherInstances;      //All other instances of the script will be disabled when this is clicked. This stops selection of other transform selects once one has been activated.
 
     [Header("Movement Variables")]
-    public Transform targetTransform;       //The transform that the selection transform will begin moving to in its selection state.  
-    public Transform transformToMove;       //The transform that will be moved.
+    [SerializeField]
+    internal Transform m_targetTransform;       //The transform that the selection transform will begin moving to in its selection state.  
+    [SerializeField]
+    internal Transform m_transformToMove;       //The transform that will be moved.
 
+    [Header("Events")]
+    [SerializeField]
+    internal UnityEvent m_onSelectEvent;        //The event that is called when the selection process begins.
+    [SerializeField]
+    internal UnityEvent m_onSelectingEvent;     //The event that is called when the selection process ends.
+    [SerializeField]
+    internal UnityEvent m_onUnSelectingEvent;   //The event that is called when the selection process is completed.
 
-    protected IEnumerator moveCoroutine;    //Referance to the move coroutine.
-    protected IEnumerator waitCoroutine;    //Referance to the move coroutine.
-    protected Vector3 originalPos;          //Original position of the transform.
-    protected Quaternion originalRot;       //Original rotation of the transform.
-    protected bool selectionComplete;       //True if the selection is complete.
+    private IEnumerator m_moveCoroutine;    //Referance to the move coroutine.
+    private IEnumerator m_waitCoroutine;    //Referance to the move coroutine.
+    private Vector3 m_originalPos;          //Original position of the transform.
+    private Quaternion m_originalRot;       //Original rotation of the transform.
+    private bool m_selectionComplete;       //True if the selection is complete.
 
 
 
     #region Setup
-    protected virtual void OnEnable()
+    private void Awake()
     {
         //--------Setup Positions-------------------------------------------
-        if (transformToMove != null)
+        if (m_transformToMove != null)
         {
-            originalPos = transformToMove.position;
-            originalRot = transformToMove.rotation;
+            m_originalPos = m_transformToMove.position;
+            m_originalRot = m_transformToMove.rotation;
         }
         //--------------------------------------------------------------------
-        if(targetTransform!=null)targetTransform.gameObject.SetActive(false);
+        if(m_targetTransform!=null)m_targetTransform.gameObject.SetActive(false);
     }
-    protected virtual void OnDisable() { }
     #endregion
 
 
@@ -58,73 +62,90 @@ public class TransformSelect : MonoBehaviour
     /// This method should be called when the selection object is begining its selection.
     /// Will exit if called when selection arelady complete.
     /// </summary>
-    public virtual void OnSelected()
+    public void OnSelected()
     {
-        if (selectionComplete) return;
+        if (m_selectionComplete) return;
 
         //If target is specified move to taget.
-        if (transformToMove!=null && targetTransform != null)
+        if (m_transformToMove!=null && m_targetTransform != null)
         {
-            if (moveCoroutine != null) StopCoroutine(moveCoroutine);
-            moveCoroutine = MoveOverSeconds(transformToMove, targetTransform.position, targetTransform.rotation, timeToFinishSelect);
-            StartCoroutine(moveCoroutine);
+            if (m_moveCoroutine != null) StopCoroutine(m_moveCoroutine);
+            m_moveCoroutine = MoveOverSeconds(m_transformToMove, m_targetTransform.position, m_targetTransform.rotation, m_timeToFinishSelect);
+            StartCoroutine(m_moveCoroutine);
         }
         //Else just start a wait timer coroutine.
         else
         {
-            if (waitCoroutine != null) StopCoroutine(waitCoroutine);
-            waitCoroutine = WaitOverSeconds(timeToFinishSelect);
-            StartCoroutine(waitCoroutine);
+            if (m_waitCoroutine != null) StopCoroutine(m_waitCoroutine);
+            m_waitCoroutine = WaitOverSeconds(m_timeToFinishSelect);
+            StartCoroutine(m_waitCoroutine);
         }
 
-        onSelectingEvent.Invoke();
+        m_onSelectingEvent.Invoke();
 
-        Debug.Log("|||||||OnSelecting");
+        Debug.Log("Selecting: "+gameObject.name);
 
     }
     /// <summary>
     /// Should be called when the selection object is being unselected.
     /// Will exit if called when selection is already complete.
     /// </summary>
-    public virtual void OnUnselected()
+    public void OnUnselected()
     {
-        if (selectionComplete) return;
+        if (m_selectionComplete) return;
 
         //If target is specified move to target.
-        if (transformToMove != null && targetTransform != null)
+        if (m_transformToMove != null && m_targetTransform != null)
         {
-            if (moveCoroutine != null) StopCoroutine(moveCoroutine);
-            moveCoroutine = MoveOverSeconds(transformToMove, originalPos, originalRot, timeToFinishSelect / 2);
-            StartCoroutine(moveCoroutine);
+            //Stop and return to origin position.
+            if (m_moveCoroutine != null) StopCoroutine(m_moveCoroutine);
+            m_moveCoroutine = MoveOverSeconds(m_transformToMove, m_originalPos, m_originalRot, m_timeToFinishSelect / 2);
+            StartCoroutine(m_moveCoroutine);
         }
         //Else stop the wait coroutine. 
         else
         {
-            if (waitCoroutine != null) StopCoroutine(waitCoroutine);
+            if (m_waitCoroutine != null) StopCoroutine(m_waitCoroutine);
         }
 
-        onUnSelectingEvent.Invoke();
+        m_onUnSelectingEvent.Invoke();
 
-        Debug.Log("|||||||OnUNSelecting");
+        Debug.Log("Unselecting: "+gameObject.name);
 
     }
+
+
     /// <summary>
-    /// This method is called when the selection object has finished the selection process.
-    /// Will exit if already complete.
-    /// Calles corountine in order to add a delay before a level is loaded.
+    /// Re-enable selection and return to origin position.
     /// </summary>
-    protected virtual void OnSelectionComplete()
+    public void ResetAfterSelected()
     {
-        if (selectionComplete) return;
-        selectionComplete = true;
+        if (m_transformToMove != null && m_targetTransform != null) 
+        {
+            StartCoroutine(ReturnToOriginPositionCoroutine());
+        }
+        else
+        {
+            m_selectionComplete = false;
+        } 
+    }
 
-        if (moveCoroutine != null) StopCoroutine(moveCoroutine);
-        if (waitCoroutine != null) StopCoroutine(waitCoroutine);
+   
+    // This method is called when the selection object has finished the selection process.
+    // Will exit if already complete.
+    // Calles corountine in order to add a delay before a level is loaded.
+    private void OnSelectionComplete()
+    {
+        if (m_selectionComplete) return;
+        m_selectionComplete = true;
 
-        onSelectEvent.Invoke();
-        StartCoroutine(OnSelectionCompleteCoroutine());
+        if (m_moveCoroutine != null) StopCoroutine(m_moveCoroutine);
+        if (m_waitCoroutine != null) StopCoroutine(m_waitCoroutine);
 
-        if (disableOtherInstances)
+        m_onSelectEvent.Invoke();
+        //StartCoroutine(OnSelectionCompleteCoroutine());
+
+        if (m_disableOtherInstances)
         {
             TransformSelect[] allInstances = FindObjectsOfType<TransformSelect>();
             foreach (TransformSelect scriptInstance in allInstances)
@@ -132,27 +153,9 @@ public class TransformSelect : MonoBehaviour
         }
 
     }
-    private IEnumerator OnSelectionCompleteCoroutine()
-    {
-        yield return new WaitForSeconds(delayAfterSelected);
 
-        if (!sceneToLoadName.Equals(""))
-        {
-            if (sceneToLoadName.Equals("Exit")) Application.Quit();
-            Debug.Log("Loading..." + sceneToLoadName);
-            SceneManager.LoadScene(sceneToLoadName); ;
-        }
-
-
-        //------Return object to origin for tidyness---------------------------------------------------
-        yield return new WaitForSeconds(delayAfterSelected * 2);
-        if (targetTransform !=null && transformToMove!=null) yield return StartCoroutine(MoveOverSeconds(transformToMove, originalPos, originalRot, timeToFinishSelect / 2));
-        selectionComplete = false;
-        //----------------------------------------------------------------------------------------------
-
-
-        onSelectDelayEvent.Invoke();
-    }
+    
+   
     #endregion
 
 
@@ -173,7 +176,7 @@ public class TransformSelect : MonoBehaviour
             yield return new WaitForEndOfFrame();
         }
         objectToMove.transform.position = end;
-        if (objectToMove.transform.position == targetTransform.position && objectToMove.transform.rotation == targetTransform.rotation) OnSelectionComplete();
+        if (objectToMove.transform.position == m_targetTransform.position && objectToMove.transform.rotation == m_targetTransform.rotation) OnSelectionComplete();
 
     }
 
@@ -184,6 +187,16 @@ public class TransformSelect : MonoBehaviour
         OnSelectionComplete();
     }
 
+
+    //Return the transform to its origin position.
+    private IEnumerator ReturnToOriginPositionCoroutine()
+    {
+        if (m_targetTransform != null && m_transformToMove != null)
+        {
+            yield return StartCoroutine(MoveOverSeconds(m_transformToMove, m_originalPos, m_originalRot, m_timeToFinishSelect / 2));
+        }
+        m_selectionComplete = false;
+    }
 
 
 

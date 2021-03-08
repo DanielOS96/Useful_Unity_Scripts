@@ -2,48 +2,56 @@
 using System.Collections.Generic;
 using UnityEngine;
 /// <summary>
-/// This script will:
-/// -Handle the audio and fx for the transfrom select.
-/// -This is a decorator script for transfrom select.
+/// This is a decorator class for TransformSelect script.
+/// Handle the audio and fx for the transfrom select.
 /// </summary>
+[RequireComponent(typeof(AudioSource))]
 public class TransformSelect_Effects : MonoBehaviour {
-
-    public TransformSelect scriptInstance;  //Referance to the transform select script instance.
+    [SerializeField]
+    private TransformSelect m_scriptInstance;  //Referance to the transform select script instance.
 
     [Header("Audio Variables")]
-    public AudioClip selectingAudio;                      //The audio that will play as transform is being selected.  
-    public AudioClip selectedAudio;                       //The audio that will play when transform is fully selected. 
-    [Range(0, 1)] public float selectingVolume = 0.05f;   //The volume of the audio that plays when selecting has begun.
-    [Range(0, 1)] public float selectedVolume = 1f;       //The volume of the audio that plays when the tramsfom is selected.
+    [SerializeField]
+    private AudioClip m_selectingAudio;        //The audio that will play as transform is being selected.  
+    [SerializeField]
+    private AudioClip m_selectedAudio;         //The audio that will play when transform is fully selected. 
+    [SerializeField]
+    [Range(0, 1)] 
+    private float m_selectingVolume = 0.05f;   //The volume of the audio that plays when selecting has begun.
+    [SerializeField]
+    [Range(0, 1)] 
+    private float m_selectedVolume = 1f;       //The volume of the audio that plays when the tramsfom is selected.
 
 
     [Header("Particle Variables")]
-    public GameObject selectingParticles;   //The particle system that will play as the transform is being selected.        
-    public GameObject selectedParticles;    //The particle system will play when the transform has been selected.    
+    [SerializeField]
+    private GameObject m_selectingParticles;   //The particle system that will play as the transform is being selected. 
+    [SerializeField]
+    private GameObject m_selectedParticles;    //The particle system will play when the transform has been selected.    
 
 
-    AudioSource src;
+    private AudioSource m_src;  //Audio source referance.
 
     #region Setup
     private void OnEnable()
     {
-        src = (gameObject.GetComponent<AudioSource>() == null) ? gameObject.AddComponent<AudioSource>() : gameObject.GetComponent<AudioSource>();
-        scriptInstance = scriptInstance == null ? GetComponent<TransformSelect>() : scriptInstance;
+        m_src = gameObject.GetComponent<AudioSource>();
+        m_scriptInstance = m_scriptInstance == null ? GetComponent<TransformSelect>() : m_scriptInstance;
 
-        if (scriptInstance != null)
+        if (m_scriptInstance != null)
         {
-            scriptInstance.onSelectingEvent.AddListener(OnStart);
-            scriptInstance.onUnSelectingEvent.AddListener(OnStop);
-            scriptInstance.onSelectEvent.AddListener(OnSelectComplete);
+            m_scriptInstance.m_onSelectingEvent.AddListener(OnStart);
+            m_scriptInstance.m_onUnSelectingEvent.AddListener(OnStop);
+            m_scriptInstance.m_onSelectEvent.AddListener(OnSelectComplete);
         }
     }
     private void OnDisable()
     {
-        if (scriptInstance != null)
+        if (m_scriptInstance != null)
         {
-            scriptInstance.onSelectingEvent.RemoveListener(OnStart);
-            scriptInstance.onUnSelectingEvent.RemoveListener(OnStop);
-            scriptInstance.onSelectEvent.RemoveListener(OnSelectComplete);
+            m_scriptInstance.m_onSelectingEvent.RemoveListener(OnStart);
+            m_scriptInstance.m_onUnSelectingEvent.RemoveListener(OnStop);
+            m_scriptInstance.m_onSelectEvent.RemoveListener(OnSelectComplete);
         }
     }
     #endregion
@@ -51,32 +59,32 @@ public class TransformSelect_Effects : MonoBehaviour {
 
     private void OnStart()
     {
-        if (selectingAudio != null)
+        if (m_selectingAudio != null)
         {
-            src.clip = selectingAudio;
-            src.volume = selectingVolume;
-            src.Play();
+            m_src.clip = m_selectingAudio;
+            m_src.volume = m_selectingVolume;
+            m_src.Play();
         }
 
-        if (selectingParticles != null) ToggleParticles(selectingParticles, true);
+        if (m_selectingParticles != null) ToggleParticles(m_selectingParticles, true);
     }
     private void OnStop()
     {
-        src.Stop();
+        m_src.Stop();
 
-        if (selectingParticles != null) ToggleParticles(selectingParticles, false);
+        if (m_selectingParticles != null) ToggleParticles(m_selectingParticles, false);
     }
     private void OnSelectComplete()
     {
-        if (selectedAudio != null)
+        if (m_selectedAudio != null)
         {
-            src.clip = selectedAudio;
-            src.volume = selectedVolume;
-            src.Play();
+            m_src.clip = m_selectedAudio;
+            m_src.volume = m_selectedVolume;
+            m_src.Play();
         }
 
 
-        if (selectedParticles != null) ToggleParticles(selectedParticles, true);
+        if (m_selectedParticles != null) ToggleParticles(m_selectedParticles, true);
 
     }
 

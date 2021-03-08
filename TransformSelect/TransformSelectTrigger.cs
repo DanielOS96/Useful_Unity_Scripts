@@ -3,31 +3,28 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
 /// <summary>
-/// This script is to be placed on a gamobejct with a collider.
-/// When the 'DrawRaycast' script's raycast hits a gameobject with a collider
-/// and this script it will trigger the 'OnHoverOn' and the 'OnHoverOff' events respectivly.
+/// When the 'DrawRaycast' script's raycast hits this collider it will 
+/// trigger the 'OnRayEnter' and the 'OnRayExit' events respectivly.
 /// </summary>
+[RequireComponent(typeof(Collider))]
 public class TransformSelectTrigger : MonoBehaviour {
 
-    public delegate void Look();
-    public event Look OnHoverOn;
-    public event Look OnHoverOff;
 
-    public UnityEvent OnGazed;
-    public UnityEvent OnUngazed;
+    [SerializeField]
+    private UnityEvent m_onRayEnter;    //Called when ray has enterd this collider.
+    [SerializeField]
+    private UnityEvent m_onRayExit;     //Called when ray has exited this collider.
 
 
-    public void OnRayEnter()
+    internal void OnRayEnter()
     {
-        if (OnHoverOn != null) OnHoverOn();
-        OnGazed.Invoke();
-        //Debug.Log("Looking");
+        m_onRayEnter.Invoke();
+        //Debug.Log("Ray Enter: "+gameObject.name);
     }
-    public void OnRayExit()
+    internal void OnRayExit()
     {
-        if (OnHoverOff != null) OnHoverOff();
-        OnUngazed.Invoke();
-        //Debug.Log("Not Looking");
+        m_onRayExit.Invoke();
+        //Debug.Log("Ray Exit: " + gameObject.name);
     }
 
 }

@@ -3,41 +3,50 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 /// <summary>
-/// This is a decorator class for Transform select.
+/// This is a decorator class for TransformSelect script.
 /// This script will show a progress bar to indicate the 
 /// transfroms current progress to its target.
 /// </summary>
 public class TransformSelect_ProgressBar : MonoBehaviour {
 
-
-    public TransformSelect scriptInstance;  //Referance to the transform select script instance.
+    [SerializeField]
+    private TransformSelect m_scriptInstance;  //Referance to the transform select script instance.
 
     [Header("Progress Bar Variables")]
-    public bool hideBarWhenInactive;        //Show the progress bar when the transform select is not active.
-    public Image progressBar;               //Referance to the progress bar.
-    public Canvas progressBarCanvas;        //Referance to the progress bar canvas.
+    [SerializeField]
+    private bool m_hideCanvasWhenInactive;      //Show the progress bar canvas when the transform select is not active.
+    [SerializeField]
+    private Image m_progressBar;               //Referance to the progress bar.
+
+    private GameObject m_canvasParent;          //Referance to the canvas parent gameobject.
 
     #region Setup
+
+    private void Awake()
+    {
+        if (m_hideCanvasWhenInactive)
+        {
+            m_canvasParent = m_progressBar.canvas.gameObject;
+            m_canvasParent.SetActive(false);
+        }
+    }
     private void OnEnable()
     {
-        scriptInstance = scriptInstance == null ? GetComponent<TransformSelect>() : scriptInstance;
-        if (scriptInstance!=null)
+        m_scriptInstance = m_scriptInstance == null ? GetComponent<TransformSelect>() : m_scriptInstance;
+        if (m_scriptInstance!=null)
         {
-            scriptInstance.onSelectingEvent.AddListener(OnStart);
-            scriptInstance.onUnSelectingEvent.AddListener(OnStop);
-            scriptInstance.onSelectEvent.AddListener(OnSelectComplete);
+            m_scriptInstance.m_onSelectingEvent.AddListener(OnStart);
+            m_scriptInstance.m_onUnSelectingEvent.AddListener(OnStop);
+            m_scriptInstance.m_onSelectEvent.AddListener(OnSelectComplete);
         }
-        if (hideBarWhenInactive && progressBarCanvas != null) progressBarCanvas.gameObject.SetActive(false);
-
     }
     private void OnDisable()
     {
-        if (scriptInstance != null)
+        if (m_scriptInstance != null)
         {
-            scriptInstance.onSelectingEvent.RemoveListener(OnStart);
-            scriptInstance.onUnSelectingEvent.RemoveListener(OnStop);
-            scriptInstance.onSelectEvent.RemoveListener(OnSelectComplete);
-
+            m_scriptInstance.m_onSelectingEvent.RemoveListener(OnStart);
+            m_scriptInstance.m_onUnSelectingEvent.RemoveListener(OnStop);
+            m_scriptInstance.m_onSelectEvent.RemoveListener(OnSelectComplete);
         }
     }
     #endregion
@@ -46,21 +55,21 @@ public class TransformSelect_ProgressBar : MonoBehaviour {
 
     private void OnStart()
     {
-        if (hideBarWhenInactive && progressBarCanvas != null) progressBarCanvas.gameObject.SetActive(true);
-        StartCoroutine(MoveOverSeconds(scriptInstance.timeToFinishSelect));
+        if (m_hideCanvasWhenInactive) m_canvasParent.SetActive(true);
+        StartCoroutine(MoveOverSeconds(m_scriptInstance.m_timeToFinishSelect));
     }
 
     private void OnStop()
     {
-        if (hideBarWhenInactive && progressBarCanvas != null) progressBarCanvas.gameObject.SetActive(false);
-        if (progressBar != null) progressBar.fillAmount = 0;
+        if (m_hideCanvasWhenInactive) m_canvasParent.SetActive(false);
+        if (m_progressBar != null) m_progressBar.fillAmount = 0;
         StopAllCoroutines();
     }
 
     private void OnSelectComplete()
     {
-        if (progressBar != null) progressBar.fillAmount = 0;
-        if (hideBarWhenInactive && progressBarCanvas != null) progressBarCanvas.gameObject.SetActive(false);
+        if (m_progressBar != null) m_progressBar.fillAmount = 0;
+        if (m_hideCanvasWhenInactive) m_canvasParent.SetActive(false);
     }
 
 
@@ -71,7 +80,7 @@ public class TransformSelect_ProgressBar : MonoBehaviour {
 
         while (elapsedTime < seconds)
         {
-            if ( progressBar != null) progressBar.fillAmount = elapsedTime / seconds;
+            if ( m_progressBar != null) m_progressBar.fillAmount = elapsedTime / seconds;
 
 
             elapsedTime += Time.deltaTime;
