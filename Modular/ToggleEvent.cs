@@ -11,8 +11,7 @@ public class ToggleEvent : MonoBehaviour
     public UnityEvent m_toggleOn;   //Called when toggle is true.
     public UnityEvent m_toggleOff;  //Called when toggle is false.
 
-    private bool m_toggle;  //This bool will be toggled.
-
+    public bool Toggle { get; set; } //This bool will be toggled.
 
 
     /// <summary>
@@ -20,9 +19,9 @@ public class ToggleEvent : MonoBehaviour
     /// </summary>
     public void PerformToggle()
     {
-        m_toggle = !m_toggle;
+        Toggle = !Toggle;
 
-        if (m_toggle) m_toggleOn.Invoke();
+        if (Toggle) m_toggleOn.Invoke();
         else m_toggleOff.Invoke();
     }
 
@@ -32,7 +31,7 @@ public class ToggleEvent : MonoBehaviour
     /// </summary>
     public void ToggleOff()
     {
-        m_toggle = false;
+        Toggle = false;
         m_toggleOff.Invoke();
     }
 
@@ -41,7 +40,7 @@ public class ToggleEvent : MonoBehaviour
     /// </summary>
     public void ToggleOn()
     {
-        m_toggle = true;
+        Toggle = true;
         m_toggleOn.Invoke();
     }
 
@@ -50,7 +49,7 @@ public class ToggleEvent : MonoBehaviour
     /// </summary>
     public void ConditionalToggleOff()
     {
-        if (m_toggle) ToggleOff();
+        if (Toggle) ToggleOff();
     }
 
     /// <summary>
@@ -58,7 +57,7 @@ public class ToggleEvent : MonoBehaviour
     /// </summary>
     public void ConditionalToggleOn()
     {
-        if (!m_toggle) ToggleOn();
+        if (!Toggle) ToggleOn();
     }
 
 }
