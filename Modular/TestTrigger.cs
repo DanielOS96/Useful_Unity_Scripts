@@ -9,13 +9,13 @@ using UnityEngine.Events;
 public class TestTrigger : MonoBehaviour
 {
     [SerializeField]
-    private UnityEvent m_onT;
+    private UnityEvent m_onT = new UnityEvent();
     [SerializeField]
-    private UnityEvent m_onY;
+    private UnityEvent m_onY = new UnityEvent();
     [SerializeField]
-    private UnityEvent m_onU;
+    private UnityEvent m_onU = new UnityEvent();
     [SerializeField]
-    private UnityEvent m_onI;
+    private UnityEvent m_onI = new UnityEvent();
 
     // Update is called once per frame
     void Update()

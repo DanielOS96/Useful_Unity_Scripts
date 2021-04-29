@@ -9,9 +9,9 @@ using UnityEngine.Events;
 public class Timer : MonoBehaviour
 {
     [SerializeField]
-    private UnityEvent m_onTimerStart;
+    private UnityEvent m_onTimerStart = new UnityEvent();
     [SerializeField]
-    private UnityEvent m_onTimerEnd;
+    private UnityEvent m_onTimerEnd = new UnityEvent();
 
     /// <summary>
     /// Start the timer with a time.

@@ -8,7 +8,7 @@ using UnityEngine.Events;
 public class SpawnPrefab : MonoBehaviour
 {
     [System.Serializable]
-    private class GameObjectUnityEvent : UnityEvent<GameObject>{}
+    private class GameObjectUnityEvent : UnityEvent<GameObject> { }
 
     [SerializeField]
     private GameObject m_prefabToSpawn;    //The prefab to spawn.
@@ -16,7 +16,7 @@ public class SpawnPrefab : MonoBehaviour
     private Transform m_spawnPosition;     //Position to spawn the prefab.
     [SerializeField]
     private Vector3 m_spawnPositionOffset; //Spawn position offset.
-
+    [SerializeField]
     private GameObjectUnityEvent m_onPrefabSpawned;  //Event called after prefab is spawned.
 
 
@@ -46,10 +46,10 @@ public class SpawnPrefab : MonoBehaviour
         //If spawn position is null spawn at current position.
         m_spawnPosition = m_spawnPosition == null ? transform : m_spawnPosition;
 
-        GameObject spawnedObj = Instantiate(m_prefabToSpawn, m_spawnPosition.position+m_spawnPositionOffset, m_spawnPosition.rotation);
+        GameObject spawnedObj = Instantiate(m_prefabToSpawn, m_spawnPosition.position + m_spawnPositionOffset, m_spawnPosition.rotation);
 
         //Invoke event and pass the GameObject referance.
-        m_onPrefabSpawned.Invoke(spawnedObj); 
+        m_onPrefabSpawned.Invoke(spawnedObj);
 
     }
 }
