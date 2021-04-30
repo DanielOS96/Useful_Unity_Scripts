@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 /// <summary>
 /// Set the position, rotation, scale or offset of this transform.
+/// <para>Contains methods for re-parenting, offsetting and manually setting based off defined values.</para>
 /// </summary>
 public class SetTransform : MonoBehaviour
 {
@@ -14,6 +15,12 @@ public class SetTransform : MonoBehaviour
     private Transform m_transformToCopy; //Set the target transform to this transforms position.
     [SerializeField]
     private bool m_local;    //Set local or world values.
+    [SerializeField]
+    Vector3 m_manualPosition;   //The used when setting position manually
+    [SerializeField]
+    Vector3 m_manualRotationEuler;   //The used when setting euler rotation manually
+    [SerializeField]
+    Vector3 m_offsetPosition;   //The values to offset the transform by.
 
     private Transform m_originalParent; //The original parent of the transform to modify.
 
@@ -28,10 +35,21 @@ public class SetTransform : MonoBehaviour
 
     private void Awake()
     {
+        //Set up the transform to modify variable to this transform on awake if nothing set.
         m_transformToModify = m_transformToModify == null ? m_transformToModify = transform : m_transformToModify;
     }
 
+
     #region Offset Position Methods
+    /// <summary>
+    /// Offset the position of the transform to modify to the values of the OffsetPosition Vector 3 variable.
+    /// </summary>
+    public void SetOffsetPosition()
+    {
+        SetOffsetXPosition(m_offsetPosition.x);
+        SetOffsetYPosition(m_offsetPosition.y);
+        SetOffsetZPosition(m_offsetPosition.z);
+    }
 
     /// <summary>
     /// Set the 'X' axis offset position of the transform.
@@ -82,6 +100,7 @@ public class SetTransform : MonoBehaviour
     }
     #endregion
 
+
     #region Re-Parenting Methods
     /// <summary>
     /// Set the parent of the transform to modify to the transform to copy.
@@ -107,8 +126,60 @@ public class SetTransform : MonoBehaviour
     }
     #endregion
 
+
+    #region Manual Set Transform Methods
     /// <summary>
-    /// Set the position of the transform.
+    /// Manually set the euler position of the transform to modify to the value of the ManualPosition Vector3 variable.
+    /// </summary>
+    public void ManuallySetPosition()
+    {
+        ManuallySetPosition(m_manualPosition);
+    }
+    /// <summary>
+    /// Manually set the position of the transform to modify to a given Vector 3.
+    /// </summary>
+    /// <param name="newRotation">The new eular angle.</param>
+    public void ManuallySetPosition(Vector3 newPosition)
+    {
+        if (!m_local)
+        {
+            m_transformToModify.position = newPosition;
+        }
+        else
+        {
+            m_transformToModify.localPosition = newPosition;
+        }
+    }
+
+
+    /// <summary>
+    /// Manually set the euler rotation of the transform to modify to the value of the ManualRotationEuler Vector3 variable.
+    /// </summary>
+    public void ManuallySetRotationEuler()
+    {
+        ManuallySetRotationEuler(m_manualRotationEuler);
+    }
+    /// <summary>
+    /// Manually set the euler rotation of the transform to modify to a given Vector 3.
+    /// </summary>
+    /// <param name="newRotation">The new eular angle.</param>
+    public void ManuallySetRotationEuler(Vector3 newRotation)
+    {
+        if (!m_local)
+        {
+            m_transformToModify.eulerAngles = newRotation;
+        }
+        else
+        {
+            m_transformToModify.localEulerAngles = newRotation;
+        }
+    }
+    #endregion
+
+
+    #region Set Transform Methods
+    /// <summary>
+    /// Set the position of the transform to the transform to copy transform variable..
     /// </summary>
     public void SetPosition()
     {
@@ -126,11 +197,13 @@ public class SetTransform : MonoBehaviour
         }
         else
         {
-            m_transformToModify.localPosition = transformPosition.position;
+            m_transformToModify.localPosition = transformPosition.localPosition;
         }
     }
 
-
+    /// <summary>
+    /// Set the euler roation of the transform to the transform to copy transform variable.
+    /// </summary>
     public void SetRotationEuler()
     {
         SetRotationEuler(m_transformToCopy);
@@ -151,7 +224,9 @@ public class SetTransform : MonoBehaviour
         }
     }
 
-
+    /// <summary>
+    /// Set the quaternian roation of the transform to the transform to copy transform variable.
+    /// </summary>
     public void SetRotationQuaternion()
     {
         SetRotationQuaternion(m_transformToCopy);
@@ -173,7 +248,9 @@ public class SetTransform : MonoBehaviour
     }
 
 
-
+    /// <summary>
+    /// Set the scale of the transform to the transform to copy transform variable.
+    /// </summary>
     public void SetScale()
     {
         SetScale(m_transformToCopy);
@@ -186,5 +263,6 @@ public class SetTransform : MonoBehaviour
     {
         m_transformToModify.localScale = transformScale.localScale;
     }
+    #endregion
 
 }
